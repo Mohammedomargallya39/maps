@@ -3,11 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:hexcolor/hexcolor.dart';
 import 'package:maps/core/util/translation.dart';
 import 'package:maps/core/util/widgets/my_button.dart';
-import 'package:restart_app/restart_app.dart';
-import '../../features/login/presentaion/pages/login_page.dart';
-import '../di/injection.dart';
 import '../models/select_government_model.dart';
-import '../network/local/cache_helper.dart';
 import 'cubit/cubit.dart';
 
 int selectedService = 0;
@@ -648,15 +644,3 @@ final List<SelectGovernmentModel> cities = [
   ),
 
 ];
-
-void signOut (context)
-{
-  sl<CacheHelper>().clear('token').then((value)
-  {
-    if(value)
-    {
-      navigateAndFinish(context, const LoginScreen(),);
-      Restart.restartApp();
-    }
-  });
-}

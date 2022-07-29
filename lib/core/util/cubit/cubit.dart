@@ -4,12 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:hexcolor/hexcolor.dart';
-import 'package:image_picker/image_picker.dart';
 import 'package:maps/core/util/cubit/state.dart';
 import '../../di/injection.dart';
-import '../../models/login_model.dart';
-import '../../models/register_model.dart';
-import '../../models/select_government_model.dart';
 import '../../network/local/cache_helper.dart';
 import '../../network/repository.dart';
 import '../constants.dart';
@@ -35,13 +31,6 @@ class AppCubit extends Cubit<AppState> {
   late ThemeData lightTheme;
   late ThemeData darkTheme;
   late String family;
-
-  void changeSuffix() {
-    isPassword = !isPassword;
-    suffix =
-    isPassword ? Icons.visibility: Icons.visibility_off;
-    emit(UserChangeLoginSuffixState());
-  }
 
   void setThemes({
     required bool dark,
@@ -260,170 +249,6 @@ class AppCubit extends Cubit<AppState> {
     ));
 
     emit(LanguageLoaded());
-  }
-
-  PageController pageController = PageController();
-
-  int currentIndex = 0;
-
-  void bottomChanged(
-    int index,
-    context,
-  ) {
-    currentIndex = index;
-
-    pageController.jumpToPage(
-      index,
-    );
-
-    emit(BottomChanged());
-  }
-
-  SelectGovernmentModel selectGovernment = cities[0];
-  void changeSelectGovernment({
-  required SelectGovernmentModel value,
-}){
-    selectGovernment = value;
-    emit(ChangeSelectGovernment());
-  }
-
-
-  final emailController = TextEditingController();
-  final passwordController = TextEditingController();
-  LoginModel? loginModel;
-
-  void userLogin() async
-  {
-    emit(UserLoginLoading());
-
-    final login = await _repository.login(
-      email: emailController.text,
-      password: passwordController.text,
-    );
-
-    login.fold(
-            (failure)
-        {
-          emit(UserLoginError(
-              message: failure,
-          )
-          );
-          debugPrint(failure.toString());
-        },
-            (data)
-          {
-            loginModel = data;
-             emit(UserLoginSuccess(
-                 token: loginModel!.data!.token!,
-                 email: loginModel!.data!.email!,
-                 name:  loginModel!.data!.name!,
-             ));
-
-  }
-    );
-
-}
-
-  final ImagePicker selectImagePicker = ImagePicker();
-  File? galleryImage;
-  void selectImage() async
-  {
-    selectImagePicker.pickImage(source: ImageSource.gallery).then((value)
-    {
-      galleryImage = File(value!.path);
-      emit(SelectImageState());
-    });
-  }
-
-
-  RegisterModel? registerModel;
-  void userRegister(
-  {
-  required String name,
-  required String email,
-  required String password,
-  required String mobile,
-  required File image
-
-    //required String city,
-  }) async
-  {
-    emit(UserRegisterLoading());
-
-    final register = await _repository.register(
-      email: email,
-      password: password,
-      mobile: mobile,
-      name: name,
-      image: image
-      //city: city,
-
-    );
-
-    register.fold(
-            (failure)
-        {
-          emit(UserRegisterError(
-            message: failure,
-          )
-          );
-          debugPrint(failure.toString());
-        },
-            (data)
-        {
-          registerModel = data;
-          emit(UserRegisterSuccess(
-            token: '${registerModel!.data?.accessToken}',
-          ));
-
-        }
-    );
-
-  }
-
-
-  final List<String> images = [
-    'assets/images/market.png',
-    'assets/images/sell.png',
-    'assets/images/shopping.png',
-  ];
-  int currentSliderIndicator = 0;
-  void changeSlide() {
-    currentSliderIndicator;
-    emit(ChangeSlider());
-  }
-
-  bool customTileExpanded = false;
-  void changeCustomTileExpanded() {
-    customTileExpanded;
-    emit(ChangeCustomTileExpanded());
-  }
-
-  int ? numOfProducts = 1;
-  void counterPlus() {
-    numOfProducts = numOfProducts! + 1;
-    emit(NumPlus());
-  }
-  void counterMin() {
-    numOfProducts = numOfProducts! - 1;
-    if (numOfProducts! < 1) {
-      numOfProducts = 1;
-    }
-    emit(NumMin());
-  }
-
-  int ? numOfProductsInCart = 1;
-  int ? productPoints = 55;
-  void counterPlusInCart() {
-    numOfProductsInCart = numOfProductsInCart! + 1;
-    emit(NumPlusInCart());
-  }
-  void counterMinInCart() {
-    numOfProductsInCart = numOfProductsInCart! - 1;
-    if (numOfProductsInCart! < 1) {
-      numOfProductsInCart = 1;
-    }
-    emit(NumMinInCart());
   }
 
 
