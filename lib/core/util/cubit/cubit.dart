@@ -1,8 +1,10 @@
+import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:hexcolor/hexcolor.dart';
 import 'package:maps/core/util/cubit/state.dart';
 import '../../di/injection.dart';
@@ -251,6 +253,69 @@ class AppCubit extends Cubit<AppState> {
     emit(LanguageLoaded());
   }
 
+  ///___MAPS___
+
+  Completer<GoogleMapController> mapController = Completer();
+  final locationController = TextEditingController();
+
+  CameraPosition homePosition = const CameraPosition(
+    target: LatLng(30.291201, 31.740620),
+    zoom: 17,
+  );
+
+  void goToLocation(Map<String, dynamic> location)async{
+    double lat = location['geometry']['location']['lat'];
+    double lng = location['geometry']['location']['lng'];
+    latLocationSearch = lat;
+    lngLocationSearch = lng;
+
+    debugPrintFullText('laaaaaaaaaaaaaaaaat is $latLocationSearch');
+    debugPrintFullText('lnnnnnnnnnnnnnnnnng is $lngLocationSearch');
+
+
+    final GoogleMapController locationMapController = await mapController.future;
+    locationMapController.animateCamera(
+        CameraUpdate.newCameraPosition(
+            CameraPosition(
+                target: LatLng(lat, lng),
+                zoom: 15,
+            ),
+        ),
+    );
+  }
+
+  Marker homeMarker = const Marker(
+      markerId: MarkerId('homePosition'),
+      infoWindow: InfoWindow(title: 'Home'),
+      icon: BitmapDescriptor.defaultMarker,
+      position: LatLng(30.291201, 31.740620),
+  );
+
+  Marker searchMarker = Marker(
+    markerId: const MarkerId('searchPosition'),
+    icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueRed),
+    position: LatLng(latLocationSearch!, lngLocationSearch!),
+  );
+
+//>>>>>>>>>>>>
+
+  // Polyline lineOnMap =  Polyline(
+  //     polylineId: const PolylineId('lineOnMap'),
+  //     width: 5,
+  //     color: HexColor(mainColor),
+  //     points: const [
+  //       LatLng(30.291201, 31.740620),
+  //       LatLng(30.294, 31.7405),
+  //     ]
+  // );
+
+  // Polygon polygonLineOnMap = const Polygon(
+  //     polygonId: PolygonId('polygonLineOnMap'),
+  //     points: [
+  //       LatLng(30.291201, 31.740620),
+  //       LatLng(30.294, 31.7405),
+  //     ]
+  // );
 
 
 }
