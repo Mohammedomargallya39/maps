@@ -647,3 +647,6 @@ final List<SelectGovernmentModel> cities = [
 
 double? latLocationSearch = 0;
 double? lngLocationSearch = 0;
+
+double? currentLat;
+double? currentLng;
