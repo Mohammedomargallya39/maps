@@ -61,6 +61,7 @@ dependencies:
   restart_app: ^1.1.0
   data_connection_checker_nulls: ^0.0.2
   google_maps_flutter: ^2.1.10
+  geolocator: ^9.0.1
 
 
 dev_dependencies:

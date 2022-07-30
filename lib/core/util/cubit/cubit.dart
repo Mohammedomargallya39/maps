@@ -253,13 +253,13 @@ class AppCubit extends Cubit<AppState> {
     emit(LanguageLoaded());
   }
 
-  ///___MAPS___
+  ///___MAPS___///
 
   Completer<GoogleMapController> mapController = Completer();
   final locationController = TextEditingController();
 
-  CameraPosition homePosition = const CameraPosition(
-    target: LatLng(30.291201, 31.740620),
+  CameraPosition homePosition =  CameraPosition(
+    target: LatLng(currentLat!, currentLng!),
     zoom: 17,
   );
 
@@ -284,18 +284,37 @@ class AppCubit extends Cubit<AppState> {
     );
   }
 
-  Marker homeMarker = const Marker(
-      markerId: MarkerId('homePosition'),
-      infoWindow: InfoWindow(title: 'Home'),
+  Marker currentMarker = Marker(
+      markerId: const MarkerId('homePosition'),
+      infoWindow: const InfoWindow(title: 'Current Location'),
       icon: BitmapDescriptor.defaultMarker,
-      position: LatLng(30.291201, 31.740620),
+      position: LatLng(currentLat!, currentLng!),
   );
 
-  Marker searchMarker = Marker(
-    markerId: const MarkerId('searchPosition'),
-    icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueRed),
-    position: LatLng(latLocationSearch!, lngLocationSearch!),
-  );
+  // Marker searchMarker = Marker(
+  //   markerId: const MarkerId('searchPosition'),
+  //   icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueRed),
+  //   position: LatLng(latLocationSearch!, lngLocationSearch!),
+  // );
+
+  Set<Marker> markers = <Marker>{};
+  Set<Polygon> polygons = <Polygon>{};
+  List<LatLng> pointsLatLng = <LatLng>[] ;
+  int polygonIdCounter = 1;
+
+  void setMarker (LatLng point)
+  {
+    markers.add(
+      Marker(
+            markerId: const MarkerId('marker'),
+            position: point,
+            icon: BitmapDescriptor.defaultMarker,
+            //LatLng(latLocationSearch!,lngLocationSearch!),
+        ),
+    );
+    emit(SetMarker());
+  }
+
 
 //>>>>>>>>>>>>
 

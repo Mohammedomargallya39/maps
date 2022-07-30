@@ -50,6 +50,7 @@ class HomeWidget extends StatelessWidget {
                         async {
                          var location = await LocationService().getPlace(AppCubit.get(context).locationController.text);
                          AppCubit.get(context).goToLocation(location);
+                         AppCubit.get(context).setMarker(LatLng(latLocationSearch!, lngLocationSearch!));
                          debugPrintFullText(' placeeeeeeeeeeeeeee $location');
                         },
                           icon: const Icon(Icons.search)
@@ -67,10 +68,12 @@ class HomeWidget extends StatelessWidget {
                   //
                   // },
                   mapType: MapType.normal,
-                  markers: {
-                    latLocationSearch != 0 && lngLocationSearch != 0 ?
-                  AppCubit.get(context).searchMarker : AppCubit.get(context).homeMarker
-                  },
+                  markers: latLocationSearch !=0 && lngLocationSearch !=0?
+                  AppCubit.get(context).markers : {AppCubit.get(context).currentMarker},
+                  // markers: {
+                  //   latLocationSearch != 0 && lngLocationSearch != 0 ?
+                  // AppCubit.get(context).searchMarker : AppCubit.get(context).homeMarker
+                  // },
                   initialCameraPosition: AppCubit.get(context).homePosition,
                   onMapCreated: (GoogleMapController controller)
                   {

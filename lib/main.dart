@@ -3,12 +3,12 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:maps/features/home/presentation/pages/home_page.dart';
 import 'core/di/injection.dart' as di;
 import 'core/di/injection.dart';
 import 'core/network/local/cache_helper.dart';
-import 'core/network/remote/api_endpoints.dart';
 import 'core/util/constants.dart';
 import 'core/util/cubit/cubit.dart';
 import 'core/util/cubit/state.dart';
@@ -21,6 +21,23 @@ void main() async {
   if (defaultTargetPlatform == TargetPlatform.android) {
     AndroidGoogleMapsFlutter.useAndroidViewSurface = true;
   }
+
+  // LocationSettings? locationSettings;
+  // Geolocator.getPositionStream(locationSettings: locationSettings).listen(
+  //         (Position? position) {
+  //           currentLat = position?.latitude;
+  //           currentLng = position?.longitude;
+  //           debugPrintFullText(' Current Lat is ${position?.latitude.toString()}');
+  //           debugPrintFullText(' Current Lng is ${position?.longitude.toString()}');
+  //     });
+
+
+  Position position = await Geolocator.getCurrentPosition(desiredAccuracy: LocationAccuracy.high);
+            currentLat = position.latitude;
+            currentLng = position.longitude;
+
+  debugPrintFullText(currentLat.toString());
+  debugPrintFullText(currentLng.toString());
 
 
 
