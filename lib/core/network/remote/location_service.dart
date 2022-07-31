@@ -29,9 +29,9 @@ class LocationService
     return results;
   }
 
-  Future<Map<String,dynamic>> getDirections(String start , String end)
+  Future<Map<String,dynamic>> getDirections(String end)
   async{
-    final String url = 'https://maps.googleapis.com/maps/api/directions/json?origin=$start&destination=$end&key=$key';
+    final String url = 'https://maps.googleapis.com/maps/api/directions/json?origin=$startLocation&destination=$end&key=$key';
     var response = await http.get(Uri.parse(url));
     var json = convert.jsonDecode(response.body);
     debugPrintFullText('$json');
