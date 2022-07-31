@@ -22,16 +22,6 @@ void main() async {
     AndroidGoogleMapsFlutter.useAndroidViewSurface = true;
   }
 
-  // LocationSettings? locationSettings;
-  // Geolocator.getPositionStream(locationSettings: locationSettings).listen(
-  //         (Position? position) {
-  //           currentLat = position?.latitude;
-  //           currentLng = position?.longitude;
-  //           debugPrintFullText(' Current Lat is ${position?.latitude.toString()}');
-  //           debugPrintFullText(' Current Lng is ${position?.longitude.toString()}');
-  //     });
-
-
   Position position = await Geolocator.getCurrentPosition(desiredAccuracy: LocationAccuracy.high);
             currentLat = position.latitude;
             currentLng = position.longitude;
@@ -100,7 +90,7 @@ class MyApp extends StatelessWidget {
                 rtl: isRtl,
               )..setTranslation(
                 translation: translation,
-              )
+              )..getMyAddress()
         ),
       ],
       child: BlocBuilder<AppCubit, AppState>(
@@ -125,7 +115,6 @@ class MyApp extends StatelessWidget {
             darkTheme: AppCubit.get(context).darkTheme,
             home: isConnection == DataConnectionStatus.disconnected?
             const NoConnectionPage() : startWidget,
-            //token != null ? const MainPageScreen() :const LoginScreen() ,
           );
         },
       ),

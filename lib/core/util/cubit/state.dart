@@ -25,6 +25,9 @@ class SetMarkerState extends AppState {}
 
 class GoToLocationState extends AppState {}
 
+class MyAddressState extends AppState {}
+
+
 
 
 

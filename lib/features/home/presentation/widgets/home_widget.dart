@@ -1,4 +1,3 @@
-import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
@@ -33,24 +32,12 @@ class HomeWidget extends StatelessWidget {
                 child: Row(
                   children: [
                     Expanded(
-                      child: Column(
-                        children: [
-                          MyForm(
-                              label: 'Select Start Location',
-                              controller: AppCubit.get(context).startLocationController,
-                              type: TextInputType.text,
-                              error: 'Select your location,please',
-                              isPassword: false
-                          ),
-                          space20Vertical(context),
-                          MyForm(
-                              label: 'Select End Location',
-                              controller: AppCubit.get(context).endLocationController,
-                              type: TextInputType.text,
-                              error: 'Select your location,please',
-                              isPassword: false
-                          ),
-                        ],
+                      child: MyForm(
+                          label: 'Select Address',
+                          controller: AppCubit.get(context).endLocationController,
+                          type: TextInputType.text,
+                          error: 'Select your location,please',
+                          isPassword: false
                       ),
                     ),
 
@@ -62,7 +49,6 @@ class HomeWidget extends StatelessWidget {
                         onPressed: ()
                         async {
                           var directions = await LocationService().getDirections(
-                          AppCubit.get(context).startLocationController.text,
                           AppCubit.get(context).endLocationController.text,
                           );
                          // var location = await LocationService().getPlace(AppCubit.get(context).locationController.text);
@@ -77,7 +63,6 @@ class HomeWidget extends StatelessWidget {
                          AppCubit.get(context).setPolyline(
                              directions ['polyline_decoded']
                          );
-                         // debugPrintFullText(' placeeeeeeeeeeeeeee $location');
                         },
                           icon: const Icon(Icons.search)
                         ,),
@@ -87,20 +72,10 @@ class HomeWidget extends StatelessWidget {
               ),
               Expanded(
                 child: GoogleMap(
-                  // polylines: {
-                  //   AppCubit.get(context).lineOnMap
-                  // },
-                  // polygons: {
-                  //
-                  // },
                   polylines: AppCubit.get(context).polylines,
                   mapType: MapType.normal,
-                  markers: AppCubit.get(context).startLocationController.text.isNotEmpty?
+                  markers: AppCubit.get(context).endLocationController.text.isNotEmpty?
                   AppCubit.get(context).markers : {AppCubit.get(context).currentMarker},
-                  // markers: {
-                  //   latLocationSearch != 0 && lngLocationSearch != 0 ?
-                  // AppCubit.get(context).searchMarker : AppCubit.get(context).homeMarker
-                  // },
                   initialCameraPosition: AppCubit.get(context).homePosition,
                   onMapCreated: (GoogleMapController controller)
                   {

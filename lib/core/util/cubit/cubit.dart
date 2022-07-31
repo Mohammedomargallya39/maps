@@ -5,6 +5,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_polyline_points/flutter_polyline_points.dart';
+import 'package:geocoding/geocoding.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:hexcolor/hexcolor.dart';
 import 'package:maps/core/util/cubit/state.dart';
@@ -257,7 +259,6 @@ class AppCubit extends Cubit<AppState> {
   ///___MAPS___///
 
   Completer<GoogleMapController> mapController = Completer();
-  final startLocationController = TextEditingController();
   final endLocationController = TextEditingController();
 
 
@@ -315,12 +316,6 @@ class AppCubit extends Cubit<AppState> {
       position: LatLng(currentLat!, currentLng!),
   );
 
-  // Marker searchMarker = Marker(
-  //   markerId: const MarkerId('searchPosition'),
-  //   icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueRed),
-  //   position: LatLng(latLocationSearch!, lngLocationSearch!),
-  // );
-
   Set<Marker> markers = <Marker>{};
   Set<Polyline> polylines = <Polyline>{};
   List<LatLng> pointsLatLng = <LatLng>[] ;
@@ -359,26 +354,16 @@ class AppCubit extends Cubit<AppState> {
     emit(SetMarkerState());
   }
 
+  void getMyAddress ()
+  async{
+    List<Placemark> placemarks = await placemarkFromCoordinates(currentLat!,currentLng!);
+    Placemark place = placemarks[3];
+    var address = '${place.street}';
+    startLocation = address;
+    debugPrintFullText('Address =========================== $address');
+    emit(MyAddressState());
+  }
 
-//>>>>>>>>>>>>
-
-  // Polyline lineOnMap =  Polyline(
-  //     polylineId: const PolylineId('lineOnMap'),
-  //     width: 5,
-  //     color: HexColor(mainColor),
-  //     points: const [
-  //       LatLng(30.291201, 31.740620),
-  //       LatLng(30.294, 31.7405),
-  //     ]
-  // );
-
-  // Polygon polygonLineOnMap = const Polygon(
-  //     polygonId: PolygonId('polygonLineOnMap'),
-  //     points: [
-  //       LatLng(30.291201, 31.740620),
-  //       LatLng(30.294, 31.7405),
-  //     ]
-  // );
 
 
 }

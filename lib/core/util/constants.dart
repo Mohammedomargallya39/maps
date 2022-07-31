@@ -652,3 +652,5 @@ double? currentLng;
 double? latLocationSearch = currentLat;
 double? lngLocationSearch = currentLng;
 
+String? startLocation;
+
