@@ -62,6 +62,7 @@ dependencies:
   data_connection_checker_nulls: ^0.0.2
   google_maps_flutter: ^2.1.10
   geolocator: ^9.0.1
+  flutter_polyline_points: ^1.0.0
 
 
 dev_dependencies:

@@ -33,14 +33,27 @@ class HomeWidget extends StatelessWidget {
                 child: Row(
                   children: [
                     Expanded(
-                      child: MyForm(
-                          label: 'Select Location',
-                          controller: AppCubit.get(context).locationController,
-                          type: TextInputType.text,
-                          error: 'Select your location,please',
-                          isPassword: false
+                      child: Column(
+                        children: [
+                          MyForm(
+                              label: 'Select Start Location',
+                              controller: AppCubit.get(context).startLocationController,
+                              type: TextInputType.text,
+                              error: 'Select your location,please',
+                              isPassword: false
+                          ),
+                          space20Vertical(context),
+                          MyForm(
+                              label: 'Select End Location',
+                              controller: AppCubit.get(context).endLocationController,
+                              type: TextInputType.text,
+                              error: 'Select your location,please',
+                              isPassword: false
+                          ),
+                        ],
                       ),
                     ),
+
                     Padding(
                       padding: EdgeInsets.only(
                           top: responsiveValue(context, 20)
@@ -48,10 +61,23 @@ class HomeWidget extends StatelessWidget {
                       child: IconButton(
                         onPressed: ()
                         async {
-                         var location = await LocationService().getPlace(AppCubit.get(context).locationController.text);
-                         AppCubit.get(context).goToLocation(location);
-                         AppCubit.get(context).setMarker(LatLng(latLocationSearch!, lngLocationSearch!));
-                         debugPrintFullText(' placeeeeeeeeeeeeeee $location');
+                          var directions = await LocationService().getDirections(
+                          AppCubit.get(context).startLocationController.text,
+                          AppCubit.get(context).endLocationController.text,
+                          );
+                         // var location = await LocationService().getPlace(AppCubit.get(context).locationController.text);
+                         AppCubit.get(context).goToLocation(
+                           directions['start_location']['lat'],
+                           directions['start_location']['lng'],
+                           directions['bounds_ne'],
+                           directions['bounds_sw'],
+                           context,
+                         );
+
+                         AppCubit.get(context).setPolyline(
+                             directions ['polyline_decoded']
+                         );
+                         // debugPrintFullText(' placeeeeeeeeeeeeeee $location');
                         },
                           icon: const Icon(Icons.search)
                         ,),
@@ -67,8 +93,9 @@ class HomeWidget extends StatelessWidget {
                   // polygons: {
                   //
                   // },
+                  polylines: AppCubit.get(context).polylines,
                   mapType: MapType.normal,
-                  markers: latLocationSearch !=0 && lngLocationSearch !=0?
+                  markers: AppCubit.get(context).startLocationController.text.isNotEmpty?
                   AppCubit.get(context).markers : {AppCubit.get(context).currentMarker},
                   // markers: {
                   //   latLocationSearch != 0 && lngLocationSearch != 0 ?

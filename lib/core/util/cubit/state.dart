@@ -21,7 +21,9 @@ class LanguageLoaded extends AppState {}
 
 class ChangeLoaded extends AppState {}
 
-class SetMarker extends AppState {}
+class SetMarkerState extends AppState {}
+
+class GoToLocationState extends AppState {}
 
 
 

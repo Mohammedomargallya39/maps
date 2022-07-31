@@ -4,6 +4,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_polyline_points/flutter_polyline_points.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:hexcolor/hexcolor.dart';
 import 'package:maps/core/util/cubit/state.dart';
@@ -256,16 +257,24 @@ class AppCubit extends Cubit<AppState> {
   ///___MAPS___///
 
   Completer<GoogleMapController> mapController = Completer();
-  final locationController = TextEditingController();
+  final startLocationController = TextEditingController();
+  final endLocationController = TextEditingController();
+
 
   CameraPosition homePosition =  CameraPosition(
     target: LatLng(currentLat!, currentLng!),
     zoom: 17,
   );
 
-  void goToLocation(Map<String, dynamic> location)async{
-    double lat = location['geometry']['location']['lat'];
-    double lng = location['geometry']['location']['lng'];
+  void goToLocation(
+      double lat,
+      double lng,
+      Map<String,dynamic> boundsNe,
+      Map<String,dynamic> boundsSw,
+      BuildContext context,
+      )async{
+    // double lat = location['geometry']['location']['lat'];
+    // double lng = location['geometry']['location']['lng'];
     latLocationSearch = lat;
     lngLocationSearch = lng;
 
@@ -282,6 +291,21 @@ class AppCubit extends Cubit<AppState> {
             ),
         ),
     );
+
+    locationMapController.animateCamera(
+        CameraUpdate.newLatLngBounds(
+            LatLngBounds(
+                southwest: LatLng(boundsSw['lat'],boundsSw['lng'],),
+                northeast: LatLng(boundsNe['lat'],boundsNe['lng'],),
+            ),
+            responsiveValue(context, 25)
+        )
+    );
+
+
+    setMarker(LatLng(latLocationSearch!, lngLocationSearch!));
+
+    emit(GoToLocationState());
   }
 
   Marker currentMarker = Marker(
@@ -298,9 +322,29 @@ class AppCubit extends Cubit<AppState> {
   // );
 
   Set<Marker> markers = <Marker>{};
-  Set<Polygon> polygons = <Polygon>{};
+  Set<Polyline> polylines = <Polyline>{};
   List<LatLng> pointsLatLng = <LatLng>[] ;
-  int polygonIdCounter = 1;
+  int polylineIdCounter = 1;
+
+  void setPolyline(List<PointLatLng> points)
+  {
+    String polylineIdValue = 'polyline_$polylineIdCounter';
+    polylineIdCounter ++;
+    polylines.add(
+        Polyline(
+            polylineId: PolylineId(
+                polylineIdValue
+            ),
+          width: 2,
+          color: HexColor(mainColor),
+          points: points.map(
+                  (point) => LatLng(
+                      point.latitude, point.longitude
+                  ),
+          ).toList(),
+        ),
+    );
+  }
 
   void setMarker (LatLng point)
   {
@@ -312,7 +356,7 @@ class AppCubit extends Cubit<AppState> {
             //LatLng(latLocationSearch!,lngLocationSearch!),
         ),
     );
-    emit(SetMarker());
+    emit(SetMarkerState());
   }
 
 
